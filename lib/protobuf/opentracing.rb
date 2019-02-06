@@ -39,8 +39,8 @@ module Protobuf
         def_delegator :@connector, :send_request, :send_traced_request
 
         def send_request
-          options
-          ::OpenTracing.start_active_span("testing") do |scope|
+          operation = "#{options[:service]}##{options[:method]}"
+          ::OpenTracing.start_active_span(operation) do
             send_traced_request
           end
         end
