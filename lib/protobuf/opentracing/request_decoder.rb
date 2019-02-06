@@ -17,7 +17,6 @@ module Protobuf
         result = nil
         operation = "#{env.service_name}##{env.method_name}"
 
-        binding.pry
         if trace_context.nil?
           ::OpenTracing.start_active_span(operation) do
             result = app.call(env)

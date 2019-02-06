@@ -14,7 +14,6 @@ module Protobuf
     module Extensions
       module Base
         def request_bytes
-          binding.pry
           trace_carrier = {}
           ::OpenTracing.inject(::OpenTracing.active_span.context,
                                ::OpenTracing::FORMAT_TEXT_MAP,
@@ -41,7 +40,6 @@ module Protobuf
 
         def send_request
           options
-          binding.pry
           ::OpenTracing.start_active_span("testing") do |scope|
             send_traced_request
           end
