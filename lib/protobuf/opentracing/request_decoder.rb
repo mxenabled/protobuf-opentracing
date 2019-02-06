@@ -17,6 +17,7 @@ module Protobuf
         result = nil
         operation = "#{env.service_name}##{env.method_name}"
 
+        binding.pry
         if trace_context.nil?
           ::OpenTracing.start_active_span(operation) do
             result = app.call(env)
@@ -34,7 +35,13 @@ module Protobuf
 
       def trace_context
         return nil if env.request_wrapper.trace.nil?
-        @trace_context ||= JSON.parse(env.request_wrapper.trace.raw)
+        @trace_context ||= JSON.parse(request_wrapper.trace.raw)
+      end
+
+      def request_wrapper
+        @request_wrapper ||= ::Protobuf::Socketrpc::Request.decode(env.encoded_request)
+      rescue => exception
+        raise BadRequestData, "Unable to decode request: #{exception.message}"
       end
     end
   end
