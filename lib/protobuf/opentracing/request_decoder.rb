@@ -34,13 +34,7 @@ module Protobuf
 
       def trace_context
         return nil if env.request_wrapper.trace.nil?
-        @trace_context ||= JSON.parse(request_wrapper.trace.raw)
-      end
-
-      def request_wrapper
-        @request_wrapper ||= ::Protobuf::Socketrpc::Request.decode(env.encoded_request)
-      rescue => exception
-        raise BadRequestData, "Unable to decode request: #{exception.message}"
+        @trace_context ||= JSON.parse(env.request_wrapper.trace.raw)
       end
     end
   end
