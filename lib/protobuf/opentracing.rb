@@ -20,18 +20,16 @@ module Protobuf
                                trace_carrier)
 
           headers = trace_carrier.map do |header|
-            ::Protobuf::Socketrpc::MapEntry.new(:key => header[0],
-                                                :value => header[1])
+            ::Protobuf::Socketrpc::Header.new(:key => header[0],
+                                              :value => header[1])
           end
-
-          trace = ::Protobuf::Socketrpc::Trace.new(:headers => headers)
 
           validate_request_type!
           fields = { :service_name => @options[:service].name,
                      :method_name => @options[:method].to_s,
                      :request_proto => @options[:request],
                      :caller => request_caller,
-                     :trace => trace }
+                     :headers => headers }
 
           return ::Protobuf::Socketrpc::Request.encode(fields)
         rescue => e

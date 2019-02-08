@@ -15,16 +15,19 @@ module Protobuf
         @env = env
 
         result = nil
+        parent = nil
         operation = "#{env.service_name}##{env.method_name}"
 
-        if trace_context.nil?
+        unless headers.nil?
+          parent = ::OpenTracing.extract(::OpenTracing::FORMAT_TEXT_MAP, headers)
+        end
+
+        if parent.nil?
           ::OpenTracing.start_active_span(operation) do
             result = app.call(env)
           end
         else
-          trace = ::OpenTracing.extract(::OpenTracing::FORMAT_TEXT_MAP, trace_context)
-
-          ::OpenTracing.start_active_span(operation, :child_of => trace) do
+          ::OpenTracing.start_active_span(operation, :child_of => parent) do
             result = app.call(env)
           end
         end
@@ -32,9 +35,9 @@ module Protobuf
         result
       end
 
-      def trace_context
-        return nil if env.request_wrapper.trace.nil?
-        @trace_context ||= env.request_wrapper.trace.headers.reduce({}) do |ctx, header|
+      def headers
+        return nil if env.request_wrapper.nil?
+        @headers ||= env.request_wrapper.headers.reduce({}) do |ctx, header|
           ctx[header.key] = header.value
           ctx
         end
