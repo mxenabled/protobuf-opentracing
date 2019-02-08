@@ -18,7 +18,13 @@ module Protobuf
           ::OpenTracing.inject(::OpenTracing.active_span.context,
                                ::OpenTracing::FORMAT_TEXT_MAP,
                                trace_carrier)
-          trace = ::Protobuf::Socketrpc::Trace.new(:raw => JSON.generate(trace_carrier))
+
+          headers = trace_carrier.map do |header|
+            ::Protobuf::Socketrpc::MapEntry.new(:key => header[0],
+                                                :value => header[1])
+          end
+
+          trace = ::Protobuf::Socketrpc::Trace.new(:headers => headers)
 
           validate_request_type!
           fields = { :service_name => @options[:service].name,

@@ -34,7 +34,10 @@ module Protobuf
 
       def trace_context
         return nil if env.request_wrapper.trace.nil?
-        @trace_context ||= JSON.parse(env.request_wrapper.trace.raw)
+        @trace_context ||= env.request_wrapper.trace.headers.reduce({}) do |ctx, header|
+          ctx[header.key] = header.value
+          ctx
+        end
       end
     end
   end
