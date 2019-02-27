@@ -20,8 +20,8 @@ Or install it yourself as:
 
 ## Usage
 
-This gem injects middleware into the RPC client flow which will decode tracing
-information and start a new active span. See the
+When laoded, this gem injects middleware into the RPC client flow which will
+decode tracing information and start a new active span. See the
 [`opentracing`](https://rubygems.org/gems/opentracing/) gem for additional
 information.
 
