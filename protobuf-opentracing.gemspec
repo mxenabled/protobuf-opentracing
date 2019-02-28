@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Add service to service tracing with Opentracing."
   spec.description   = "Add service to service tracing with Opentracing."
-  spec.homepage      = "https://gitlab.mx.com/mx/protobuf-opentracing-middleware"
+  spec.homepage      = "https://gitlab.mx.com/mx/protobuf-opentracing"
   spec.license       = "MIT"
 
   # Prevent pushing this gem to RubyGems.org. To allow pushes either set the 'allowed_push_host'
