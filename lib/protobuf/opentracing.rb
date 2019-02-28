@@ -1,3 +1,5 @@
+require "active_support"
+
 require "protobuf/opentracing/version"
 require "protobuf/opentracing/request_decoder"
 
