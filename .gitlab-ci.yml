@@ -7,7 +7,7 @@ stages:
 
 before_script:
   - gem update --system
-  - gem install bundler --no-doc
+  - gem install bundler --no-doc --version "< 2"
   - bundle install --jobs=2 --retry=3
 
 .test-specific-version: &test-specific-version
