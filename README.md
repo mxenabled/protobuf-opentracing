@@ -40,4 +40,4 @@ git commits and tags, and push the `.gem` file to
 ## Contributing
 
 Bug reports and pull requests are welcome at
-https://gitlab.mx.com/mx/protobuf-opentracing.
+https://github.com/mxenabled/protobuf-opentracing.
