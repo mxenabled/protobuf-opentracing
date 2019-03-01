@@ -11,7 +11,7 @@ Gem::Specification.new do |spec|
 
   spec.summary       = "Add service to service tracing with Opentracing."
   spec.description   = "Add service to service tracing with Opentracing."
-  spec.homepage      = "https://gitlab.mx.com/mx/protobuf-opentracing"
+  spec.homepage      = "https://github.com/mxenabled/protobuf-opentracing"
   spec.license       = "MIT"
 
   # Specify which files should be added to the gem when it is released.
