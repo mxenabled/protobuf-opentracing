@@ -1,7 +1,7 @@
 module Protobuf
   module Opentracing
     class RequestDecoder
-      attr_reader :app, :env
+      attr_reader :app
 
       def initialize(app)
         @app = app
