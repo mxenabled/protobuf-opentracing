@@ -28,7 +28,7 @@ Gem::Specification.new do |spec|
   spec.add_dependency "activesupport", ">= 3.2", active_support_max_version
   spec.add_dependency "opentracing"
 
-  spec.add_development_dependency "bundler"
+  spec.add_development_dependency "bundler", "~> 1.16"
   spec.add_development_dependency "mad_rubocop"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rake", "~> 10.0"
