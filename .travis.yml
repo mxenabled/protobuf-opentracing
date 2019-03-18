@@ -4,6 +4,7 @@ rvm:
   - 2.3.0
   - jruby-9.1.7.0
 -before_install:
+  - gem install bundler -v 1.16
   - gem update --system
 script:
   - bundle exec rake
