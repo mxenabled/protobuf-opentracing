@@ -1,5 +1,6 @@
 require "bundler/setup"
 
+require "jaeger/client"
 require "protobuf"
 require "protobuf/nats"
 require "protobuf/opentracing"
@@ -19,6 +20,8 @@ ENV["PB_NATS_SERVER_SUBSCRIPTIONS_PER_RPC_ENDPOINT"] = "1"
 # found in `PROTOBUF_NATS_CONFIG_PATH` is correct.
 ::Protobuf.connector_type_class = ::Protobuf::Nats::Client
 ::Protobuf::Nats.start_client_nats_connection
+
+::OpenTracing.global_tracer = Jaeger::Client.build(:service_name => "testing")
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure
