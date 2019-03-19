@@ -28,4 +28,18 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
 
     expect(cb_called).to be true
   end
+
+  it "starts an active span on the server that is a child of the client span" do
+    cb_called = false
+
+    client = ::Protobuf::Rpc::Client.new(:service => TestService)
+    client.test_search(::TestRequest.new) do |c|
+      c.on_success do |ret|
+        expect(::OpenTracing.active_span.context.span_id.to_s).to eq(ret.parent_span_id)
+        cb_called = true
+      end
+    end
+
+    expect(cb_called).to be true
+  end
 end
