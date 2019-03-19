@@ -1,4 +1,12 @@
 RSpec.describe Protobuf::Opentracing::Extensions::Base do
+  nats_conn = ::Protobuf::Nats.client_nats_connection
+  server = ::Protobuf::Nats::Server.new(:threads => 1, :client => nats_conn)
+  server.subscribe
+
+  after(:all) do
+    server.unsubscribe
+  end
+
   it "includes tracing headers in request" do
     completed = false
 
