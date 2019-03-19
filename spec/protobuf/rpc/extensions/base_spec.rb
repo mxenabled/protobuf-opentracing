@@ -3,12 +3,10 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
   server = ::Protobuf::Nats::Server.new(:threads => 1, :client => nats_conn)
   server.subscribe
 
-  after(:all) do
-    server.unsubscribe
-  end
+  after(:all) { server.unsubscribe }
 
   it "includes tracing headers in request" do
-    completed = false
+    cb_called = false
 
     client = ::Protobuf::Rpc::Client.new(:service => TestService)
     client.test_search(::TestRequest.new) do |c|
@@ -24,10 +22,10 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
         returned_headers = conn.request_fields[:headers].map(&:key)
         expect(returned_headers).to include(*expected_headers)
 
-        completed = true
+        cb_called = true
       end
     end
 
-    expect(completed).to be true
+    expect(cb_called).to be true
   end
 end
