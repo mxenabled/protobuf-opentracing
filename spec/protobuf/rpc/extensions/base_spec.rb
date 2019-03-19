@@ -5,7 +5,7 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
 
   after(:all) { server.unsubscribe }
 
-  client = ::Protobuf::Rpc::Client.new(:service => TestService)
+  let(:client) { ::Protobuf::Rpc::Client.new(:service => TestService) }
 
   it "includes tracing headers in request" do
     cb_called = false
