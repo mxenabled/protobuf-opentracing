@@ -30,6 +30,8 @@ Gem::Specification.new do |spec|
 
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "mad_rubocop"
+  spec.add_development_dependency "protobuf", "~> 3.10.0"
+  spec.add_development_dependency "protobuf-nats"
   spec.add_development_dependency "pry"
   spec.add_development_dependency "rake", "~> 10.0"
   spec.add_development_dependency "rspec", "~> 3.0"
