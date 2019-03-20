@@ -8,7 +8,7 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
 
   after(:all) do
     server.unsubscribe
-    server.nats.connection.close
+    server.nats.close
   end
 
   let(:client) { ::Protobuf::Rpc::Client.new(:service => TestService) }
