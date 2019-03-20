@@ -1,9 +1,15 @@
-RSpec.describe Protobuf::Opentracing::Extensions::Base do
-  nats_conn = ::Protobuf::Nats.client_nats_connection
-  server = ::Protobuf::Nats::Server.new(:threads => 1, :client => nats_conn)
-  server.subscribe
+RSpec.describe Protobuf::Opentracing::Extensions::Base, :if => !defined?(JRUBY_VERSION) do
+  server = nil
 
-  after(:all) { server.unsubscribe }
+  before(:all) do
+    nats_conn = ::Protobuf::Nats.client_nats_connection
+    server = ::Protobuf::Nats::Server.new(:threads => 1, :client => nats_conn)
+    server.subscribe
+  end
+
+  after(:all) do
+    server.unsubscribe
+  end
 
   let(:client) { ::Protobuf::Rpc::Client.new(:service => TestService) }
 
