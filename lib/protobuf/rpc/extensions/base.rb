@@ -3,6 +3,8 @@ module Protobuf
     module Extensions
       module Base
         def request_fields
+          return super if ::OpenTracing.active_span.nil?
+
           trace_carrier = {}
           ::OpenTracing.inject(::OpenTracing.active_span.context,
                                ::OpenTracing::FORMAT_TEXT_MAP,

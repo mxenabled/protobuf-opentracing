@@ -1,0 +1,15 @@
+---
+  defaults: &defaults
+    servers:
+      - "nats://127.0.0.1:4222"
+    max_reconnect_attempts: 5
+    connect_timeout: 2
+
+  development:
+    <<: *defaults
+
+  production:
+    <<: *defaults
+
+  test:
+    <<: *defaults
