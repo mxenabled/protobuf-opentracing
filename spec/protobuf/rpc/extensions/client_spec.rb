@@ -32,6 +32,10 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
       ::OpenTracing.start_active_span("testing") do
         client.test_search(::TestRequest.new) do |c|
           c.on_complete do |_|
+            # Three spans: First one is the one we started in this test, second
+            # is the one started by the client, and the third is the one
+            # started by the server.
+            expect(::OpenTracing.global_tracer.spans.size).to be 3
             expect(::OpenTracing.active_span.operation_name).to eq "testing"
           end
         end
@@ -42,8 +46,10 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
       ::OpenTracing.start_active_span("TestService#test_search") do
         client.test_search(::TestRequest.new) do |c|
           c.on_complete do |_|
-            # Two spans, one started by the client and the second by the server.
+            # Two spans: First started by the client and the second started by
+            # the server.
             expect(::OpenTracing.global_tracer.spans.size).to be 2
+            expect(::OpenTracing.active_span.operation_name).to eq "TestService#test_search"
           end
         end
       end
