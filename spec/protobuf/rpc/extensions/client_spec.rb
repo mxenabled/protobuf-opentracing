@@ -1,21 +1,16 @@
 RSpec.describe Protobuf::Opentracing::Extensions::Client do
-  server = nil
-
   before do
     ::OpenTracing.global_tracer = ::OpenTracingTestTracer.build
-  end
-
-  before(:all) do
-    server = ::Protobuf::Nats::Server.new(:threads => 1)
     server.subscribe
   end
 
-  after(:all) do
+  after do
     ::OpenTracing.global_tracer = ::OpenTracing::Tracer.new
     server.unsubscribe
     server.nats.close
   end
 
+  let(:server) { ::Protobuf::Nats::Server.new(:threads => 1) }
   let(:client) { ::Protobuf::Rpc::Client.new(:service => TestService, :method => "test_search") }
 
   describe "#operation_name" do
