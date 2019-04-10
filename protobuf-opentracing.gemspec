@@ -31,6 +31,7 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency "bundler"
   spec.add_development_dependency "jaeger-client"
   spec.add_development_dependency "mad_rubocop"
+  spec.add_development_dependency "opentracing_test_tracer"
   spec.add_development_dependency "protobuf", "~> 3.10.0"
   spec.add_development_dependency "protobuf-nats"
   spec.add_development_dependency "pry"

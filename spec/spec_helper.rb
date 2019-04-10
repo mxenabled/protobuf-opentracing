@@ -4,6 +4,7 @@ require "jaeger/client"
 require "protobuf"
 require "protobuf/nats"
 require "protobuf/opentracing"
+require "opentracing_test_tracer"
 
 require "test_service"
 
