@@ -3,15 +3,10 @@ module Protobuf
     module Extensions
       module Client
         def send_request
-          return super if already_tracing_rpc?
           span = start_span
           results = super
           span.finish
           results
-        end
-
-        def already_tracing_rpc?
-          ::OpenTracing.active_span && ::OpenTracing.active_span.operation_name == operation_name
         end
 
         def operation_name

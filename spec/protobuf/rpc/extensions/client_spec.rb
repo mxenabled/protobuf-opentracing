@@ -41,18 +41,5 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
         end
       end
     end
-
-    it "does not start a span when the active span is for the same operation" do
-      ::OpenTracing.start_active_span("TestService#test_search") do
-        client.test_search(::TestRequest.new) do |c|
-          c.on_complete do |_|
-            # Two spans: First started by the client and the second started by
-            # the server.
-            expect(::OpenTracing.global_tracer.spans.size).to be 2
-            expect(::OpenTracing.active_span.operation_name).to eq "TestService#test_search"
-          end
-        end
-      end
-    end
   end
 end
