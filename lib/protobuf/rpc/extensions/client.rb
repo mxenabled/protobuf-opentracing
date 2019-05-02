@@ -4,6 +4,7 @@ module Protobuf
       module Client
         def send_request
           span = start_span
+          options[:span] = span
           results = super
           span.finish
           results
