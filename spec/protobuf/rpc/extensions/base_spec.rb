@@ -19,7 +19,7 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
     client.test_search(::TestRequest.new) do |c|
       c.on_complete do |conn|
         carrier = {}
-        ::OpenTracing.inject(c.connector.options[:span].context,
+        ::OpenTracing.inject(c.connector.options[:tracing_span].context,
                              ::OpenTracing::FORMAT_TEXT_MAP,
                              carrier)
 
@@ -41,7 +41,7 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
 
     client.test_search(::TestRequest.new) do |c|
       c.on_success do |ret|
-        expect(c.connector.options[:span].context.span_id.to_s).to eq(ret.parent_span_id)
+        expect(c.connector.options[:tracing_span].context.span_id.to_s).to eq(ret.parent_span_id)
         cb_called = true
       end
     end
