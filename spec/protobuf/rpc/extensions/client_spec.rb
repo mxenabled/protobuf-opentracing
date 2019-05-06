@@ -20,15 +20,25 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
   end
 
   describe "#send_request" do
-    it "starts a new active span when making a request" do
+    it "starts an active span if needed when making a request" do
       client.test_search(::TestRequest.new) do |c|
         c.on_complete do |_|
-          expect(::OpenTracing.active_span.operation_name).to eq client.operation_name
+          expect(::OpenTracing.global_tracer.spans.first.operation_name).to eq client.operation_name
         end
       end
     end
 
-    it "does not start a new active span when one has already been created" do
+    it "does not start an active span if one exists when making a request" do
+      ::OpenTracing.start_active_span("testing") do
+        client.test_search(::TestRequest.new) do |c|
+          c.on_complete do |_|
+            expect(::OpenTracing.global_tracer.spans.first.operation_name).to eq "testing"
+          end
+        end
+      end
+    end
+
+    it "links spans in the expected hierarchy" do
       ::OpenTracing.start_active_span("testing") do
         client.test_search(::TestRequest.new) do |c|
           c.on_complete do |_|
@@ -36,7 +46,13 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
             # is the one started by the client, and the third is the one
             # started by the server.
             expect(::OpenTracing.global_tracer.spans.size).to be 3
-            expect(::OpenTracing.active_span.operation_name).to eq "testing"
+
+            manual_span = ::OpenTracing.global_tracer.spans[0]
+            client_span = ::OpenTracing.global_tracer.spans[1]
+            server_span = ::OpenTracing.global_tracer.spans[2]
+
+            expect(client_span.context.parent_id).to eq manual_span.context.span_id
+            expect(server_span.context.parent_id).to eq client_span.context.span_id
           end
         end
       end

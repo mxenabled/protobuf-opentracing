@@ -19,7 +19,7 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
     client.test_search(::TestRequest.new) do |c|
       c.on_complete do |conn|
         carrier = {}
-        ::OpenTracing.inject(::OpenTracing.active_span.context,
+        ::OpenTracing.inject(c.connector.options[:tracing_span].context,
                              ::OpenTracing::FORMAT_TEXT_MAP,
                              carrier)
 
@@ -36,12 +36,12 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
     expect(cb_called).to be true
   end
 
-  it "starts an active span on the server that is a child of the client span" do
+  it "starts a span on the server that is a child of the client span" do
     cb_called = false
 
     client.test_search(::TestRequest.new) do |c|
       c.on_success do |ret|
-        expect(::OpenTracing.active_span.context.span_id.to_s).to eq(ret.parent_span_id)
+        expect(c.connector.options[:tracing_span].context.span_id.to_s).to eq(ret.parent_span_id)
         cb_called = true
       end
     end
