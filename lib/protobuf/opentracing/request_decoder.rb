@@ -13,6 +13,8 @@ module Protobuf
         parent = ::OpenTracing.extract(::OpenTracing::FORMAT_TEXT_MAP, headers)
         options = {}
         options[:child_of] = parent unless parent.nil?
+        options[:tags] = {}
+        options[:tags]["span.kind"] = "server"
         result = nil
 
         ::OpenTracing.start_active_span(operation, options) do

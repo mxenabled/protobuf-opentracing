@@ -41,6 +41,8 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
 
     client.test_search(::TestRequest.new) do |c|
       c.on_success do |ret|
+        includes_kind_tag = ret.tags.any? { |t| t.key == "span.kind" && t.value == "server" }
+        expect(includes_kind_tag).to be true
         expect(c.connector.options[:tracing_span].context.span_id.to_s).to eq(ret.parent_span_id)
         cb_called = true
       end
