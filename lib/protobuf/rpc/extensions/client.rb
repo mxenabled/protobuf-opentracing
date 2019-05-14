@@ -15,10 +15,13 @@ module Protobuf
         end
 
         def start_span
+          tags = {
+            "span.kind" => "client",
+          }
           if ::OpenTracing.active_span
-            ::OpenTracing.start_span(operation_name)
+            ::OpenTracing.start_span(operation_name, :tags => tags)
           else
-            ::OpenTracing.start_active_span(operation_name).span
+            ::OpenTracing.start_active_span(operation_name, :tags => tags).span
           end
         end
       end

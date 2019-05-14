@@ -20,6 +20,15 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
   end
 
   describe "#send_request" do
+    it "tags the client span" do
+      client.test_search(::TestRequest.new) do |c|
+        c.on_complete do |_|
+          tags = ::OpenTracing.global_tracer.spans.first.tags
+          expect(tags["span.kind"]).to eq "client"
+        end
+      end
+    end
+
     it "starts an active span if needed when making a request" do
       client.test_search(::TestRequest.new) do |c|
         c.on_complete do |_|

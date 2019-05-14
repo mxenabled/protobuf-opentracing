@@ -48,4 +48,18 @@ RSpec.describe Protobuf::Opentracing::Extensions::Base do
 
     expect(cb_called).to be true
   end
+
+  it "tags the server span with expected tags" do
+    cb_called = false
+
+    client.test_search(::TestRequest.new) do |c|
+      c.on_success do |ret|
+        includes_kind_tag = ret.tags.any? { |t| t.key == "span.kind" && t.value == "server" }
+        expect(includes_kind_tag).to be true
+        cb_called = true
+      end
+    end
+
+    expect(cb_called).to be true
+  end
 end
