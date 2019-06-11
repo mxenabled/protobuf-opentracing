@@ -15,7 +15,7 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
 
   describe "#operation_name" do
     it "uses the service name and request method for the operation name" do
-      expect(client.operation_name).to eq "TestService\#test_search"
+      expect(client.operation_name).to eq "RPC TestService\#test_search"
     end
   end
 
