@@ -8,13 +8,15 @@ module Protobuf
       end
 
       def call(env)
-        operation = "#{env.service_name}##{env.method_name}"
+        operation = "RPC #{env.service_name}##{env.method_name}"
         headers = request_headers(env)
         parent = ::OpenTracing.extract(::OpenTracing::FORMAT_TEXT_MAP, headers)
         options = {}
         options[:child_of] = parent unless parent.nil?
-        options[:tags] = {}
-        options[:tags]["span.kind"] = "server"
+        options[:tags] = {
+          "span.kind" => "server",
+          "component" => "Protobuf",
+        }
         result = nil
 
         ::OpenTracing.start_active_span(operation, options) do

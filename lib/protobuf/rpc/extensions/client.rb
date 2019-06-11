@@ -11,12 +11,13 @@ module Protobuf
         end
 
         def operation_name
-          @operation_name ||= "#{options[:service]}##{options[:method]}"
+          @operation_name ||= "RPC #{options[:service]}##{options[:method]}"
         end
 
         def start_span
           tags = {
             "span.kind" => "client",
+            "component" => "Protobuf",
           }
           if ::OpenTracing.active_span
             ::OpenTracing.start_span(operation_name, :tags => tags)
