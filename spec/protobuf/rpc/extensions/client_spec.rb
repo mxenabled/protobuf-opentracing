@@ -66,5 +66,15 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
         end
       end
     end
+
+    it "closes active spans" do
+      client.test_search(::TestRequest.new) do |c|
+        c.on_complete do |_|
+          expect(::OpenTracing.active_span).to_not be_nil
+        end
+      end
+
+      expect(::OpenTracing.active_span).to be_nil
+    end
   end
 end
