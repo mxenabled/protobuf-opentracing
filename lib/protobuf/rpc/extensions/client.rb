@@ -3,11 +3,15 @@ module Protobuf
     module Extensions
       module Client
         def send_request
-          span = start_span
+          scope, span = start_span
           options[:tracing_span] = span
-          results = super
-          span.finish
-          results
+          super
+        ensure
+          if scope
+            scope.close
+          else
+            span.finish
+          end
         end
 
         def operation_name
@@ -20,9 +24,10 @@ module Protobuf
             "component" => "Protobuf",
           }
           if ::OpenTracing.active_span
-            ::OpenTracing.start_span(operation_name, :tags => tags)
+            [nil, ::OpenTracing.start_span(operation_name, :tags => tags)]
           else
-            ::OpenTracing.start_active_span(operation_name, :tags => tags).span
+            scope = ::OpenTracing.start_active_span(operation_name, :tags => tags)
+            [scope, scope.span]
           end
         end
       end

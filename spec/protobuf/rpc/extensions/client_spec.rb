@@ -13,6 +13,14 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
   let(:server) { ::Protobuf::Nats::Server.new(:threads => 1) }
   let(:client) { ::Protobuf::Rpc::Client.new(:service => TestService, :method => "test_search") }
 
+  def spans
+    ::OpenTracing.global_tracer.spans
+  end
+
+  def finished_spans
+    spans.select(&:end_time)
+  end
+
   describe "#operation_name" do
     it "uses the service name and request method for the operation name" do
       expect(client.operation_name).to eq "RPC TestService\#test_search"
@@ -65,6 +73,37 @@ RSpec.describe Protobuf::Opentracing::Extensions::Client do
           end
         end
       end
+    end
+
+    it "finishes spans" do
+      ::OpenTracing.start_active_span("testing") do
+        client.test_search(::TestRequest.new) do |c|
+          c.on_complete do |_|
+            # The only finished span is the server's by the time we get a
+            # response.
+            expect(finished_spans.size).to be 1
+          end
+        end
+
+        # Now we've left the client's context so its span has also been closed.
+        expect(finished_spans.size).to be 2
+      end
+
+      # By this point we're outside of the "testing" active span's scope so
+      # everything should be done.
+      expect(finished_spans.size).to be 3
+    end
+
+    it "closes active spans" do
+      client.test_search(::TestRequest.new) do |c|
+        c.on_complete do |_|
+          # This is the active span created by
+          # ::Protobuf::Opentracing::Extensions::Client#start_span
+          expect(::OpenTracing.active_span).to_not be_nil
+        end
+      end
+
+      expect(::OpenTracing.active_span).to be_nil
     end
   end
 end
