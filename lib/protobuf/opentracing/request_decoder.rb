@@ -19,7 +19,7 @@ module Protobuf
         }
         result = nil
 
-        ::OpenTracing.start_active_span(operation, options) do
+        ::OpenTracing.start_active_span(operation, **options) do
           result = app.call(env)
         end
 
